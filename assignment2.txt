@@ -1,0 +1,107 @@
+PUT hiking
+{
+  "mappings": {
+    "_doc": {
+      "dynamic":false,
+      "properties":{
+        "coordinator":{
+          "type":"text"
+        },
+        "coordinator_phn":{
+          "type":"keyword"
+        },
+        "budget":{
+          "type":"scaled_float",
+          "scaling_factor":100
+        },
+        "total_students":{
+          "type":"byte"
+        },
+        "hiked_on":{
+          "type":"date",
+          "format":"MM-dd-yyyy"
+        },
+        "bus_taken":{
+          "type":"boolean"
+        },
+        "distance_covered":{
+          "type":"integer_range"
+        },
+        "time_taken":{
+          "type":"date_range",
+          "format":"MM-dd-yyyy HH:mm:ss"
+        },
+        "required_items":{
+          "type":"text"
+        }
+      }
+    }
+  }
+}
+
+#4
+curl -H "Content-Type: application/json" -XPOST "http://localhost:9200/accounts/_doc/_bulk?pretty" --data-binary @accounts.json
+
+#5
+http://localhost:9200/accounts/_doc/_search?q=?
+http://localhost:9200/accounts/_doc/_search?age:[30 to 70]
+http://localhost:9200/accounts/_doc/_search?gender:F&age&gt25
+http://localhost:9200/accounts/_doc/_search?gender:M&state:ME
+
+#6
+POST accounts/_update_by_query?conflicts=proceed
+{
+"query":{"match_all":{}},
+"source":"ctx._source.expense_list=[]"
+}
+
+POST accounts/_update_by_query?conflicts=proceed
+{"query":{},
+"source":"ctx._source.expense_list.add(params.val)",
+"params":{"val":"student_loan"}
+}
+
+POST accounts/_update_by_query?conflicts=proceed
+{"query":{},
+"source":"ctx._source.expense_list.add(params.valcar)\nctx._source.expense_list.add(params.valhouse)",
+"params":{"valcar":"car_loan","valhouse:"house_loan"}
+}
+
+POST accounts/_update_by_query?conflicts=proceed
+{"query":{},
+"source":"ctx._source.expense_list.add(params.val)",
+"params":{"val":"recreation"}
+}
+
+POST accounts/_update_by_query?conflicts=proceed
+{
+"query":{},
+"source":"ctx._source.balance-=2000"
+}
+
+#7
+POST accounts/_delete_by_query
+{
+"query":{
+"term":{
+"state":{"value":"KY"}
+}
+}
+}
+
+#8
+GET accounts/_search
+{"query":{"terms":{"state":"PA"}}}
+
+GET accounts/_search
+{"query":{"range":{"age":{"gte":20,"lte":50}}}}
+
+GET accounts/_search
+{"query":{"prefix":{"firstname":"el"}}}
+
+GET accounts/_search
+{"query":{"wildcard":{"firstname":"el*"}}}
+
+#9
+PUT college
+
