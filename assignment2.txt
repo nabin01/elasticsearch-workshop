@@ -242,39 +242,98 @@ POST accounts/_update_by_query?conflicts=proceed
 }
 
 POST accounts/_update_by_query?conflicts=proceed
-{"query":{},
-"source":"ctx._source.expense_list.add(params.val)",
-"params":{"val":"recreation"}
+{
+  "query": {
+    "range": {
+      "balance": {
+        "gte": "40000"
+      }
+    }
+  },
+  "script": {
+    "source": """
+    if (ctx._source.containsKey('expense_list')){
+      if (!ctx._source.expense_list.contains(params.valcar)){
+        ctx._source.expense_list.add(params.val);
+      }
+    }else{
+      ctx._source.expense_list=[];
+      
+    }
+    """,
+    "params": {
+      "val": "recreation"
+    }
+  }
 }
 
 POST accounts/_update_by_query?conflicts=proceed
 {
-"query":{},
-"source":"ctx._source.balance-=2000"
+  "query": {
+    "term": {
+      "state": {
+        "value": "PA"
+      }
+    }
+  },
+  "script": {
+    "source": "ctx._source.balance-=2000"
+  }
 }
 
 #7
 POST accounts/_delete_by_query
 {
-"query":{
-"term":{
-"state":{"value":"KY"}
-}
-}
+  "query": {
+    "term": {
+      "state": {
+        "value": "KY"
+      }
+    }
+  }
 }
 
 #8
 GET accounts/_search
-{"query":{"terms":{"state":"PA"}}}
+{
+  "query": {
+    "term": {
+      "state": {
+        "value": "KY"
+      }
+    }
+  }
+}
 
 GET accounts/_search
-{"query":{"range":{"age":{"gte":20,"lte":50}}}}
+{
+  "query": {
+    "range": {
+      "age": {
+        "gte": 20,
+        "lte": 50
+      }
+    }
+  }
+}
 
 GET accounts/_search
-{"query":{"prefix":{"firstname":"el"}}}
+{
+  "query": {
+    "prefix": {
+      "firstname": "el"
+    }
+  }
+}
 
 GET accounts/_search
-{"query":{"wildcard":{"firstname":"el*"}}}
+{
+  "query": {
+    "wildcard": {
+      "firstname": "el*"
+    }
+  }
+}
 
 #9
 PUT college
