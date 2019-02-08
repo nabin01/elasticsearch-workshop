@@ -197,10 +197,8 @@ POST accounts/_update_by_query?conflicts=proceed
       if (!ctx._source.expense_list.contains(params.valstd)){
         ctx._source.expense_list.add(params.valstd);
       }
-      
     }else{
       ctx._source.expense_list=[];
-      
     }
     """,
     "params": {
@@ -228,10 +226,8 @@ POST accounts/_update_by_query?conflicts=proceed
       if (!ctx._source.expense_list.contains(params.valhouse)){
         ctx._source.expense_list.add(params.valhouse);
       }
-      
     }else{
       ctx._source.expense_list=[];
-      
     }
     """,
     "params": {
@@ -253,7 +249,7 @@ POST accounts/_update_by_query?conflicts=proceed
   "script": {
     "source": """
     if (ctx._source.containsKey('expense_list')){
-      if (!ctx._source.expense_list.contains(params.valcar)){
+      if (!ctx._source.expense_list.contains(params.val)){
         ctx._source.expense_list.add(params.val);
       }
     }else{
