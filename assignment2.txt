@@ -1,50 +1,184 @@
-PUT Vendors
+#1
+DELETE vendors
+PUT vendors
 {
   "mappings": {
     "_doc": {
-      "dynamic":false,
-      "properties":{
-          "owner":{
-             "properties":{
-                 "name": {"type":"text"},
-                 "phone": {"contact":"keyword"}
-             }
-          },
-          "contact":{"type":"keyword"},
-          "address":"{"type":"text"},
-          "location":"{"type":"geo_point"},
-          "score":"{"type":"integer_range"},
-          "branches":{
-              "type":"nested",
-              "properties":{
-                  "id":{"type":"integer"}.
-                  "address":{"type":"text"},
-                  "branch_head":{"type":"text"}
-              }
-          },
-          "delivery":"{"type":"boolean"}
-          "established":"{"type":"date"}
-          "tags":"{"type":"text"}
-          "":"{"type":""}
+      "dynamic": false,
+      "properties": {
+        "name": {
+          "type": "text"
+        },
+        "owner": {
+          "properties": {
+            "name": {
+              "type": "text"
+            },
+            "phone": {
+              "type": "keyword"
+            }
+          }
+        },
+        "contact": {
+          "type": "keyword"
+        },
+        "address": {
+          "type": "text"
+        },
+        "location": {
+          "type": "geo_point"
+        },
+        "score": {
+          "type": "integer_range"
+        },
+        "branches": {
+          "type": "nested",
+          "properties": {
+            "id": {
+              "type": "integer"
+            },
+            "address": {
+              "type": "text"
+            },
+            "branch_head": {
+              "type": "text"
+            }
+          }
+        },
+        "delivery": {
+          "type": "boolean"
+        },
+        "established": {
+          "type": "date",
+          "format": "dd/MM/yyyy"
+        },
+        "tags": {
+          "type": "text"
+        },
+        "net_worth": {
+          "type": "double"
+        },
+        "annual_profit": {
+          "type": "long"
+        }
       }
     }
   }
 }
+
+#2
+PUT vendors/_doc/1
+{
+  "name":"KTM city",
+  "owner": {
+    "name":"Nabin Koirala",
+    "phone": 9861495057
+    },
+  "contact": "01-445566",
+  "address": "Boudha",
+  "location": {
+    "lat": 44.5,
+    "lon": -44.3
+  },
+  "score": {
+    "gte": 2000,
+    "lte": 5000
+  },
+  "branches": [{
+    "id":212,
+    "address":"Dhulikhel",
+    "branch_head": "Subham Dhakal"
+  }],
+  "delivery": true,
+  "established": "28/02/2017", 
+  "tags": ["shopping","fashion","shoes","fashionwear","footwear"],
+  "net_worth": 45000.00,
+  "annual_profit": 20000
+}
+
+PUT vendors/_doc/2
+{
+  "name":"GoldStar",
+  "owner": {
+    "name":"Riwaj Chalise",
+    "phone": 983242324
+    },
+  "contact": "01-432514",
+  "address": "Patan",
+  "location": {
+    "lat": 54.5,
+    "lon": -54.3
+  },
+  "score": {
+    "gte": 3000,
+    "lte": 7000
+  },
+  "branches": [{
+    "id":101,
+    "address":"Koteswor",
+    "branch_head": "Ajay Bastola"
+  },{
+    "id":102,
+    "address":"Swayambhu",
+    "branch_head": "Aamod Paudel"
+  }],
+  "delivery": false,
+  "established": "11/02/2012", 
+  "tags": ["shopping","fashion","shoes","footwear"],
+  "net_worth": 60000.00,
+  "annual_profit": 30000
+}
+
+#3 throws exception - error in date field
+PUT vendors/_doc/3
+{
+  "name":"KTM CITY",
+  "owner": {
+    "name":"Nabin Koirala",
+    "phone": 9861495057
+    },
+  "contact": "01-445566",
+  "address": "Boudha",
+  "location": {
+    "lat": 44.5,
+    "lon": -44.3
+  },
+  "score": {
+    "gte": 2000,
+    "lte": 5000
+  },
+  "branches": [{
+    "id":212,
+    "address":"Dhulikhel",
+    "branch_head": "Subham Dhakal"
+  }],
+  "delivery": true,
+  "established": "28/02/2017abcd", 
+  "tags": ["shopping","fashion","shoes","fashionwear","footwear"],
+  "net_worth": 45000.00,
+  "annual_profit": 20000
+}
+
+
 
 #4
 curl -H "Content-Type: application/json" -XPOST "http://localhost:9200/accounts/_doc/_bulk?pretty" --data-binary @accounts.json
 
 #5
 http://localhost:9200/accounts/_doc/_search?q=?
-http://localhost:9200/accounts/_doc/_search?age:[30 to 70]
-http://localhost:9200/accounts/_doc/_search?gender:F&age&gt25
-http://localhost:9200/accounts/_doc/_search?gender:M&state:ME
+http://localhost:9200/accounts/_doc/_search?q=age:[30%20TO%2070]
+http://localhost:9200/accounts/_doc/_search?q=gender:F%20AND%20age:[25%20TO%20*]
+http://localhost:9200/accounts/_doc/_search?q=gender:M%20AND%20state:ME
 
 #6
 POST accounts/_update_by_query?conflicts=proceed
 {
-"query":{"match_all":{}},
-"source":"ctx._source.expense_list=[]"
+  "query": {
+    "match_all": {}
+  },
+  "script": {
+    "source": "ctx._source.expense_list=[]"
+  }
 }
 
 POST accounts/_update_by_query?conflicts=proceed
@@ -97,64 +231,56 @@ GET accounts/_search
 #9
 PUT college
 {
-    "mappings":{
-        "_doc":{
-            "dynamic":false,
-            "properties":{
-                "batch":{
-                    "type":"integer"
-                },
-                "students":{
-                    "type":"nested",
-                    "properties":{
-                        "id":{
-                            "type":"integer"
-                        },
-                        "firstname":{
-                            "type":"text"
-                        }
-                    }
-                }
+  "mappings": {
+    "_doc": {
+      "dynamic": false,
+      "properties": {
+        "batch": {
+          "type": "integer"
+        },
+        "students": {
+          "type": "nested",
+          "properties": {
+            "id": {
+              "type": "integer"
+            },
+            "name": {
+              "type": "text"
             }
+          }
         }
+      }
     }
+  }
 }
 
-POST college/_doc/1
+PUT college/_doc/1
 {
-    "batch":1,
-    "students":[{
-        "id":001,
-        "name":"nabin koirala"
-    },
-    {
-    "id":002,
-    "name":"subham dhakal"
-    },
-    {
-        "id":001,
-        "name":"riwaj chalise"
-    }
+  "batch":2020,
+  "stuents":[{"id":601,"name":"Nabin Koirala"},
+  {"id":602,"name":"Subham Dhakal"},
+  {"id":603,"name": "Aamod Paudel"}
+  ]
 }
 
 PUT workshop
 {
-    "mappings":{
-        "_doc":{
-            "dynamic":false,
-            "properties":{
-                "students_id":{
-                    "type": "integer"
-                },
-                "workshop_about":{
-                    "type":"text"
-                },
-                "enrolled_year":{
-                    "type":"date"
-                }
-            }
+  "mappings": {
+    "_doc": {
+      "dynamic": false,
+      "properties": {
+        "students_id": {
+          "type": "integer"
+        },
+        "workshop_about": {
+          "type": "text"
+        },
+        "enrolled_year": {
+          "type": "date"
         }
+      }
     }
+  }
 }
 
 POST workshop/_doc/_bulk
