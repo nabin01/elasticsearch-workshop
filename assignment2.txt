@@ -182,15 +182,63 @@ POST accounts/_update_by_query?conflicts=proceed
 }
 
 POST accounts/_update_by_query?conflicts=proceed
-{"query":{},
-"source":"ctx._source.expense_list.add(params.val)",
-"params":{"val":"student_loan"}
+{
+  "query": {
+    "range": {
+      "age": {
+        "gte": "30",
+        "lte": "70"
+      }
+    }
+  },
+  "script": {
+    "source": """
+    if (ctx._source.containsKey('expense_list')){
+      if (!ctx._source.expense_list.contains(params.valstd)){
+        ctx._source.expense_list.add(params.valstd);
+      }
+      
+    }else{
+      ctx._source.expense_list=[];
+      
+    }
+    """,
+    "params": {
+      "valstd": "student_loan"
+    }
+  }
 }
 
 POST accounts/_update_by_query?conflicts=proceed
-{"query":{},
-"source":"ctx._source.expense_list.add(params.valcar)\nctx._source.expense_list.add(params.valhouse)",
-"params":{"valcar":"car_loan","valhouse:"house_loan"}
+{
+  "query": {
+    "range": {
+      "age": {
+        "gte": "25",
+        "lte": "50"
+      }
+    }
+  },
+  "script": {
+    "source": """
+    if (ctx._source.containsKey('expense_list')){
+      if (!ctx._source.expense_list.contains(params.valcar)){
+        ctx._source.expense_list.add(params.valcar);
+      }
+      if (!ctx._source.expense_list.contains(params.valhouse)){
+        ctx._source.expense_list.add(params.valhouse);
+      }
+      
+    }else{
+      ctx._source.expense_list=[];
+      
+    }
+    """,
+    "params": {
+      "valcar": "car_loan",
+      "valhouse": "house_loan"
+    }
+  }
 }
 
 POST accounts/_update_by_query?conflicts=proceed
