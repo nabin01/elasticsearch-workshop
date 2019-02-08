@@ -406,9 +406,10 @@ GET workshop/_search
 {
     "query":{
         "terms":{
-            "students":{
+            "students_id":{
                 "index":"college",
                 "type":"_doc",
+                "id": "all",
                 "path":"students.id"
             }
         }
