@@ -1,39 +1,31 @@
-PUT hiking
+PUT Vendors
 {
   "mappings": {
     "_doc": {
       "dynamic":false,
       "properties":{
-        "coordinator":{
-          "type":"text"
-        },
-        "coordinator_phn":{
-          "type":"keyword"
-        },
-        "budget":{
-          "type":"scaled_float",
-          "scaling_factor":100
-        },
-        "total_students":{
-          "type":"byte"
-        },
-        "hiked_on":{
-          "type":"date",
-          "format":"MM-dd-yyyy"
-        },
-        "bus_taken":{
-          "type":"boolean"
-        },
-        "distance_covered":{
-          "type":"integer_range"
-        },
-        "time_taken":{
-          "type":"date_range",
-          "format":"MM-dd-yyyy HH:mm:ss"
-        },
-        "required_items":{
-          "type":"text"
-        }
+          "owner":{
+             "properties":{
+                 "name": {"type":"text"},
+                 "phone": {"contact":"keyword"}
+             }
+          },
+          "contact":{"type":"keyword"},
+          "address":"{"type":"text"},
+          "location":"{"type":"geo_point"},
+          "score":"{"type":"integer_range"},
+          "branches":{
+              "type":"nested",
+              "properties":{
+                  "id":{"type":"integer"}.
+                  "address":{"type":"text"},
+                  "branch_head":{"type":"text"}
+              }
+          },
+          "delivery":"{"type":"boolean"}
+          "established":"{"type":"date"}
+          "tags":"{"type":"text"}
+          "":"{"type":""}
       }
     }
   }
@@ -104,4 +96,89 @@ GET accounts/_search
 
 #9
 PUT college
+{
+    "mappings":{
+        "_doc":{
+            "dynamic":false,
+            "properties":{
+                "batch":{
+                    "type":"integer"
+                },
+                "students":{
+                    "type":"nested",
+                    "properties":{
+                        "id":{
+                            "type":"integer"
+                        },
+                        "firstname":{
+                            "type":"text"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+POST college/_doc/1
+{
+    "batch":1,
+    "students":[{
+        "id":001,
+        "name":"nabin koirala"
+    },
+    {
+    "id":002,
+    "name":"subham dhakal"
+    },
+    {
+        "id":001,
+        "name":"riwaj chalise"
+    }
+}
+
+PUT workshop
+{
+    "mappings":{
+        "_doc":{
+            "dynamic":false,
+            "properties":{
+                "students_id":{
+                    "type": "integer"
+                },
+                "workshop_about":{
+                    "type":"text"
+                },
+                "enrolled_year":{
+                    "type":"date"
+                }
+            }
+        }
+    }
+}
+
+POST workshop/_doc/_bulk
+{"index":{"_id":1}}
+{"students_id":[521,622,523,633,535],"workshop_about":"elastic search","enrolled_year":"2018"}
+{"index":{"_id":2}}
+{"students_id":[510,612,534,613,532],"workshop_about":"IT and networking","enrolled_year":"2016"}
+{"index":{"_id":3}}
+{"students_id":[501,502,534,522,532],"workshop_about":"Software Testing","enrolled_year":"2017"}
+{"index":{"_id":4}}
+{"students_id":[520,522,524,511,523],"workshop_about":"Python Programming Fundamentals","enrolled_year":"2017"}
+{"index":{"_id":5}}
+{"students_id":[620,614,634,643,633],"workshop_about":"Public Speaking","enrolled_year":"2016"}
+
+GET workshop/_search
+{
+    "query":{
+        "terms":{
+            "students":{
+                "index":"college",
+                "type":"_doc",
+                "path":"students.id"
+            }
+        }
+    }
+}
 
