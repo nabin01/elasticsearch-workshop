@@ -268,7 +268,7 @@ POST accounts/_update_by_query?conflicts=proceed
   "query": {
     "term": {
       "state": {
-        "value": "PA"
+        "value": "pa"
       }
     }
   },
@@ -283,7 +283,7 @@ POST accounts/_delete_by_query
   "query": {
     "term": {
       "state": {
-        "value": "KY"
+        "value": "ky"
       }
     }
   }
@@ -295,7 +295,7 @@ GET accounts/_search
   "query": {
     "term": {
       "state": {
-        "value": "KY"
+        "value": "ky"
       }
     }
   }
