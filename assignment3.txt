@@ -37,9 +37,10 @@ GET product/_search
 GET product/_search
 {
   "query": {
-    "query_string": {
-      "default_field": "name",
-      "query": "tomato OR paste"
+    "match": {
+      "name": {
+        "query": "tomato paste"
+      }
     }
   }
 }
