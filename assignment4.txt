@@ -85,6 +85,26 @@ PUT recipes
 #2
 curl -H "Content-Type: application/json" -XPOST "http://localhost:9200/recipes/_doc/_bulk?pretty" --data-binary @recipe.json
 
+#3
+POST recipes/_update_by_query?conflicts=proceed
+{
+  "query": {
+    "range": {
+      "preparation_time_minutes": {
+        "lte": "15
+      }
+    }
+  },
+  "script": """
+    if ((ctx._source.servings.max - ctx._source.servings.min) > 3){
+      ctx._source.servings.max = ctx._source.servings.min+3
+    }
+  """,
+  "params": {
+    "val": "Per Choice"
+  }
+}
+
 #4
 POST recipes/_update_by_query?conflicts=proceed
 {
