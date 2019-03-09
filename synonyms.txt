@@ -1,0 +1,5 @@
+sweet => delicious, sugary, honeyed, fresh, scented
+finish = > end, cease, stop, complete, downfall, close
+necessary => essential, inevitable, required, vital
+fashion => style, cool
+reliable => durable, quality
